@@ -42,7 +42,10 @@ function guardarHabitos(habitos) {
 // --- MODELO ---
 function crearHabito(nombre, categoria) {
   return {
-    id: Date.now().toString(),
+    // Date.now() a secas puede repetirse si se crean dos hábitos en el mismo
+    // milisegundo (detectado por el test eliminarHabito_quita_solo_ese_habito_de_storage,
+    // que eliminaba ambos hábitos por colisión de id); se añade un sufijo aleatorio.
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 9),
     nombre,
     categoria,
     creadoEn: new Date().toISOString(),

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>HabitTracker — Tests</title>
+</head>
+<body>
+  <h1>HabitTracker — resultados de los tests</h1>
+  <p>Suite de tests sin dependencias externas para <code>js/app.js</code>. Abre la consola del navegador para ver el mismo resumen ahí.</p>
+  <div id="test-output"></div>
+
+  <!--
+    Esqueleto oculto con los mismos IDs que index.html. app.js espera que
+    existan al ejecutar inicializar()/renderizarTodo() en DOMContentLoaded;
+    aquí no se usan visualmente, solo evitan errores de "elemento no encontrado".
+  -->
+  <div id="dom-real-oculto" style="display:none" aria-hidden="true">
+    <p id="fecha-cabecera"></p>
+    <h2 id="fecha-larga"></h2>
+    <div id="habit-cards"></div>
+    <p id="contador-completados"></p>
+    <div id="barra-progreso-relleno"></div>
+    <p id="racha-valor"></p>
+    <p id="racha-habito"></p>
+    <div id="historial-lista"></div>
+    <table>
+      <thead><tr id="vista-semanal-cabecera"></tr></thead>
+      <tbody id="vista-semanal-cuerpo"></tbody>
+    </table>
+    <div id="graficos-contenido"></div>
+    <form id="form-add-habit">
+      <input type="text" id="input-nombre">
+      <select id="input-categoria">
+        <option value="Mente">Mente</option>
+      </select>
+    </form>
+    <button id="btn-nuevo-habito" type="button"></button>
+    <button id="btn-borrar-datos" type="button"></button>
+  </div>
+
+  <script src="../js/app.js" defer></script>
+  <script src="test-runner.js" defer></script>
+  <script src="tests-app.js" defer></script>
+</body>
+</html>
