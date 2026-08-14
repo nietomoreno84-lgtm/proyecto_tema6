@@ -121,9 +121,61 @@ hasta el cierre del proyecto.
   2. Trocear instrucciones grandes que toquen varios archivos o funciones
      en pasos más pequeños y focalizados.
 
+## 9. Revisión de código con un subagente independiente
+
+- Tras el cierre, se creó `.claude/agents/code-reviewer.md`: un subagente de
+  solo lectura, sin el historial de la sesión de desarrollo, que audita el
+  código contra las convenciones reales de `CLAUDE.md` en vez de contra
+  buenas prácticas genéricas.
+- Su primera revisión completa encontró un bug real: `obtenerFechaHoy()` (y
+  las funciones que dependían de ella) calculaba "hoy" con
+  `toISOString()` (UTC), mientras que la cabecera de la app usa hora local —
+  desalineaba el checkbox de completado y las rachas cerca de medianoche en
+  husos horarios positivos (España incluida). También detectó que el
+  checkbox de "completado hoy" no tenía `aria-label`, a diferencia de los
+  demás elementos solo-icono.
+- Se corrigieron ambos con un helper único `formatearFechaISO(fecha)` basado
+  en componentes de fecha locales, y se documentó la lección en `CLAUDE.md`.
+  Probado en navegador vía servidor local, sin errores de consola.
+
+## 10. Revisión con múltiples subagentes especializados en paralelo
+
+- Se creó un segundo nivel de revisión: cuatro subagentes con un único foco
+  cada uno (`bugs-logica`, `seguridad`, `convenciones`, `calidad`), lanzados
+  a la vez sobre el mismo estado del código, cada uno sin ver el trabajo de
+  los demás para dar una opinión independiente.
+- **Seguridad**: sin hallazgos — todo el contenido de usuario se inserta con
+  `textContent`/`createElement`, sin dependencias externas ni credenciales
+  expuestas.
+- **Bugs y lógica**: 3 hallazgos críticos en `cargarHabitos()` — `JSON.parse`
+  sin manejo de errores (JSON corrupto rompía toda la app), migración
+  incompleta (`fechasCompletadas` ausente causaba `TypeError`), y pérdida
+  silenciosa de datos si `habitTracker_data` quedaba en el formato antiguo
+  (array plano, previo al wrapper `{ habits: [...] }`).
+- **Convenciones**: `crearPuntitosSemana` mal nombrada (debería ser
+  `renderizarPuntitosSemana`), `actualizarFechaHeader` sin prefijo
+  `renderizar`, `aplicarFiltro` sin pasar por `renderizarTodo()`, y
+  `border-radius: 6px` hardcodeado 5 veces en CSS en vez de usar/crear
+  variable.
+- **Calidad**: 4 mejoras rankeadas (extraer `crearTarjetaHabito` de
+  `renderizarHabitos`, generalizar el bucle de "últimos N días", documentar
+  el porqué de la migración de `categoria`, dividir `renderizarVistaSemanal`).
+- Se corrigieron los 3 hallazgos críticos de bugs/lógica: `cargarHabitos()`
+  ahora envuelve `JSON.parse` en try/catch (devuelve `[]` si el dato está
+  corrupto en vez de romper la app), completa la migración también para
+  `fechasCompletadas` ausente/no-array, y detecta el formato antiguo en
+  array plano con `Array.isArray(parseado)` para no perder esos datos. Los
+  hallazgos de convenciones y calidad quedaron documentados, pendientes de
+  una futura pasada.
+- Probado en navegador con tres casos reales inyectados en `localStorage`
+  (JSON inválido, hábito sin `fechasCompletadas`, formato antiguo en array
+  plano): los tres se recuperan sin romper la app y sin errores de consola
+  no capturados.
+
 ## Estado final
 
-- **14 commits** en `main`, historial limpio, mensajes en español.
+- **18 commits** en `main` (más los de esta ronda de revisión), historial
+  limpio, mensajes en español.
 - `origin/main` sincronizado con el repositorio local.
 - Funcionalidad completa: alta/baja de hábitos, marcado diario, puntitos de
   7 días clicables, racha actual, resumen con barra de progreso, filtro por
@@ -131,4 +183,9 @@ hasta el cierre del proyecto.
   cumplimiento y borrado de datos con confirmación.
 - Documentación consistente con el código: `README.md` (features, uso,
   esquema de datos, estructura) y `CLAUDE.md` (especificación original +
-  convenciones y lecciones reales del proceso de construcción).
+  convenciones y lecciones reales del proceso de construcción, incluida la
+  robustez de `cargarHabitos()` frente a datos rotos o antiguos).
+- Cinco subagentes de revisión especializados disponibles en
+  `.claude/agents/` (`code-reviewer` de propósito general, y los cuatro
+  focalizados `bugs-logica`, `seguridad`, `convenciones`, `calidad`) para
+  futuras rondas de auditoría del proyecto.

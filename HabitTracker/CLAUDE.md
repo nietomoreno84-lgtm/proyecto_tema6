@@ -115,8 +115,16 @@ HabitTracker/
   Los nombres de campo se mantienen en español aunque un ejemplo externo los dé
   en inglés — `categoria` es necesaria para el filtro y no es opcional.
 - `cargarHabitos()` debe seguir siendo tolerante a datos antiguos guardados sin
-  un campo nuevo (ver la migración de `categoria` ausente a `"Mente"`); aplicar
-  el mismo patrón si el modelo cambia otra vez.
+  un campo nuevo (ver la migración de `categoria` ausente a `"Mente"` y de
+  `fechasCompletadas` ausente/no-array a `[]`); aplicar el mismo patrón si el
+  modelo cambia otra vez.
+- `cargarHabitos()` también debe seguir siendo resistente a datos rotos o del
+  formato anterior: JSON inválido en `habitTracker_data` (try/catch alrededor
+  de `JSON.parse`, devolviendo `[]` en vez de romper toda la app) y el formato
+  antiguo en array plano (antes de envolver en `{ habits: [...] }`), detectado
+  con `Array.isArray(parseado)` para no perder esos datos silenciosamente al
+  siguiente `guardarHabitos()`. Encontrado por el subagente `bugs-logica`
+  (ver RESUMEN_PROYECTO.md).
 
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
