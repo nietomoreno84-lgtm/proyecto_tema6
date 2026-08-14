@@ -44,6 +44,32 @@ Todos los datos (hábitos e historial de completados) se guardan en el
 `localStorage` del navegador, por lo que persisten entre sesiones pero son
 locales a ese navegador y ese equipo.
 
+## Esquema de datos
+
+Los hábitos se guardan en `localStorage` bajo la clave `habitTracker_data`,
+como un objeto con la forma:
+
+```json
+{
+  "habits": [
+    {
+      "id": "1786711032563",
+      "nombre": "Beber agua",
+      "categoria": "Mente",
+      "creadoEn": "2026-08-14T12:37:12.563Z",
+      "fechasCompletadas": ["2026-08-14"]
+    }
+  ]
+}
+```
+
+- `id`: identificador único, generado con `Date.now()`.
+- `nombre`: texto introducido por el usuario.
+- `categoria`: una de `Mente`, `Cuerpo` o `Salud`.
+- `creadoEn`: fecha ISO de creación del hábito.
+- `fechasCompletadas`: array de fechas (`YYYY-MM-DD`) en las que el hábito
+  se marcó como completado.
+
 ## Estructura de carpetas
 
 ```
