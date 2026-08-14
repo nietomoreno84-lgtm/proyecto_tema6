@@ -37,8 +37,15 @@ function crearHabito(nombre, categoria) {
 }
 
 // --- FECHAS / UTILIDADES ---
+function formatearFechaISO(fecha) {
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+}
+
 function obtenerFechaHoy() {
-  return new Date().toISOString().split('T')[0];
+  return formatearFechaISO(new Date());
 }
 
 function obtenerUltimos7Dias() {
@@ -46,7 +53,7 @@ function obtenerUltimos7Dias() {
   for (let i = 6; i >= 0; i--) {
     const fecha = new Date();
     fecha.setDate(fecha.getDate() - i);
-    dias.push(fecha.toISOString().split('T')[0]);
+    dias.push(formatearFechaISO(fecha));
   }
   return dias;
 }
@@ -95,7 +102,7 @@ function calcularRachaActual(habito) {
   const fecha = new Date();
 
   while (true) {
-    const fechaStr = fecha.toISOString().split('T')[0];
+    const fechaStr = formatearFechaISO(fecha);
     if (habito.fechasCompletadas.includes(fechaStr)) {
       racha++;
       fecha.setDate(fecha.getDate() - 1);
@@ -187,6 +194,7 @@ function renderizarHabitos() {
     checkbox.checked = completadoHoy;
     checkbox.dataset.id = habito.id;
     checkbox.className = 'checkbox-completado';
+    checkbox.setAttribute('aria-label', `Marcar ${habito.nombre} como completado hoy`);
 
     const nombre = document.createElement('span');
     nombre.className = 'habit-nombre';
@@ -250,7 +258,7 @@ function renderizarHistorial() {
   }
 
   dias.forEach((fecha) => {
-    const fechaStr = fecha.toISOString().split('T')[0];
+    const fechaStr = formatearFechaISO(fecha);
     const completadosEseDia = habitos.filter((h) => h.fechasCompletadas.includes(fechaStr));
 
     const bloque = document.createElement('div');
