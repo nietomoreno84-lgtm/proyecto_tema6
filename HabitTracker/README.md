@@ -82,12 +82,30 @@ como un objeto con la forma:
 }
 ```
 
-- `id`: identificador único, generado con `Date.now()`.
+- `id`: identificador único, generado con `Date.now()` (en base 36) más un
+  sufijo aleatorio, para que no colisione si se crean dos hábitos en el mismo
+  milisegundo.
 - `nombre`: texto introducido por el usuario.
 - `categoria`: una de `Mente`, `Cuerpo` o `Salud`.
 - `creadoEn`: fecha ISO de creación del hábito.
 - `fechasCompletadas`: array de fechas (`YYYY-MM-DD`) en las que el hábito
   se marcó como completado.
+
+## Tests
+
+Suite de tests sin dependencias externas (ni npm, ni frameworks de testing)
+para la lógica de `js/app.js`: casos normales, límite, de regresión sobre
+bugs ya corregidos y de integración con `localStorage`.
+
+Sírvela con un servidor local (los mismos motivos que para la app: algunos
+navegadores restringen JavaScript sobre `file://`) y abre:
+
+```
+http://localhost:8000/tests/tests.html
+```
+
+Los resultados se muestran en la página (✅/❌ por test) y también se
+imprimen en la consola del navegador (`TESTS: N pasados, M fallados`).
 
 ## Estructura de carpetas
 
@@ -98,6 +116,10 @@ HabitTracker/
 │   └── styles.css    # Todos los estilos
 ├── js/
 │   └── app.js         # Toda la lógica de la aplicación
+├── tests/
+│   ├── tests.html         # Página que ejecuta la suite en el navegador
+│   ├── test-runner.js     # Mini framework de aserciones, sin dependencias
+│   └── tests-app.js       # Casos de test para js/app.js
 ├── README.md
 └── CLAUDE.md          # Especificación, convenciones y decisiones del proyecto
 ```

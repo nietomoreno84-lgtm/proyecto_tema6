@@ -149,6 +149,41 @@ pendientes:
 - Documentado en un comentario por qué `cargarHabitos()` migra `categoria`
   ausente a `"Mente"` (dato guardado antes de que ese campo existiera).
 
+## Tests (2026-08-14)
+Siguiente paso del temario tras la revisión con subagentes: generación
+automática de tests. Dado que el proyecto prohíbe `npm` y dependencias
+externas (ver Restricciones importantes), no se usó pytest/Jest/etc.: se
+construyó un mini framework de aserciones propio, en JS vainilla, que corre
+en el navegador sin instalar nada.
+- `tests/test-runner.js`: funciones `test(nombre, fn)`, `assertIgual`,
+  `assertVerdadero`, `conStorageLimpio` (aísla cada test que toca
+  `localStorage`, limpiándolo antes y después) y `mostrarResultadosTests()`.
+- `tests/tests-app.js`: 30 tests sobre las funciones de `js/app.js` —
+  unitarios (fechas, rachas, mejor racha, filtro por categoría, modelo),
+  de regresión (los 3 bugs de `cargarHabitos()` corregidos en `ec6d543`:
+  JSON inválido, formato antiguo en array plano, `fechasCompletadas`
+  ausente) y de integración (`guardarHabitos`/`cargarHabitos` con
+  `localStorage` real, `toggleFecha`, `eliminarHabito`).
+- `tests/tests.html`: carga `../js/app.js` + el runner + la suite. Incluye
+  un esqueleto oculto con los mismos IDs que `index.html` para que
+  `inicializar()` no falle al no encontrar elementos; los tests no dependen
+  de ese esqueleto, solo evita errores al cargar la página.
+- **app.js es un script clásico sin `export`/`module.exports`** (se carga
+  con `<script defer>`, no como módulo): sus funciones declaradas con
+  `function` quedan en el ámbito global, así que `tests-app.js` puede
+  llamarlas directamente sin tocar `app.js` para hacerlo "testeable".
+- **Bug real encontrado por los tests** (no por revisión manual): `crearHabito`
+  generaba `id: Date.now().toString()`, que colisiona si se crean dos hábitos
+  en el mismo milisegundo — el test
+  `eliminarHabito_quita_solo_ese_habito_de_storage` lo detectó porque
+  `eliminarHabito` borraba ambos hábitos con id repetido en vez de solo uno.
+  Corregido añadiendo un sufijo aleatorio al id (`Date.now().toString(36) +
+  Math.random().toString(36).slice(2, 9)`). Ejemplo real de por qué generar
+  tests exhaustivos vale la pena incluso en código ya revisado por subagentes.
+- Cómo ejecutar: servir `HabitTracker/` con un servidor local y abrir
+  `tests/tests.html` (ver README.md). Los resultados se pintan en la página
+  y se imprimen también en consola.
+
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
   la variable en :root, crearla primero (pasó dos veces con --color-danger
