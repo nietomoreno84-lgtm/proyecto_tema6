@@ -28,6 +28,26 @@ La app se organiza en 4 pestañas: **Hoy**, **Historial**, **Gráficos** y
 - JavaScript vanilla (ES6+), sin frameworks ni librerías externas
 - `localStorage` para persistencia de datos en el navegador
 
+## Requisitos
+
+- Un navegador moderno con JavaScript habilitado (Chrome, Edge, Firefox...).
+- Nada más: no requiere Node.js, `npm`, ni instalar ninguna dependencia.
+- Opcional, solo si tu navegador restringe `file://` (ver más abajo): algo
+  que sirva archivos estáticos por HTTP, por ejemplo Python 3 (ya incluye
+  `python -m http.server`).
+
+## Instalación
+
+No hay instalación como tal: no es un paquete que se compile ni dependencias
+que resolver. Basta con obtener los archivos del proyecto:
+
+```bash
+git clone https://github.com/nietomoreno84-lgtm/proyecto_tema6.git
+cd proyecto_tema6/HabitTracker
+```
+
+Y ya está lista para usarse (ver "Cómo usarla" a continuación).
+
 ## Cómo usarla
 
 Al no depender de un servidor, basta con abrir `index.html` directamente en
@@ -116,6 +136,8 @@ imprimen en la consola del navegador (`TESTS: N pasados, M fallados`).
 - [`docs/REFERENCIA_FUNCIONES.md`](docs/REFERENCIA_FUNCIONES.md) —
   documentación técnica de cada función de `js/app.js` (parámetros, valor
   de retorno, ejemplos).
+- [`docs/REFLEXION_DOCUMENTACION.md`](docs/REFLEXION_DOCUMENTACION.md) —
+  comparativa de utilidad entre estos tres documentos.
 - [`CLAUDE.md`](CLAUDE.md) — especificación original, convenciones de
   código y decisiones tomadas durante la construcción del proyecto.
 - [`RESUMEN_PROYECTO.md`](RESUMEN_PROYECTO.md) — relato completo del
@@ -135,12 +157,14 @@ HabitTracker/
 │   ├── test-runner.js           # Mini framework de aserciones, sin dependencias
 │   └── tests-app.js             # Casos de test para js/app.js
 ├── docs/
-│   ├── GUIA_USUARIO.md          # Guía para usuarios sin perfil técnico
-│   └── REFERENCIA_FUNCIONES.md  # Documentación función a función de app.js
+│   ├── GUIA_USUARIO.md              # Guía para usuarios sin perfil técnico
+│   ├── REFERENCIA_FUNCIONES.md      # Documentación función a función de app.js
+│   └── REFLEXION_DOCUMENTACION.md   # Comparativa de los tres documentos
 ├── README.md
 ├── CHANGELOG.md             # Registro de cambios
 ├── CLAUDE.md                 # Especificación, convenciones y decisiones del proyecto
-└── RESUMEN_PROYECTO.md      # Relato del proceso de construcción
+├── RESUMEN_PROYECTO.md      # Relato del proceso de construcción
+└── LICENSE                  # Licencia MIT
 ```
 
 ## Restricciones de diseño
@@ -150,3 +174,9 @@ HabitTracker/
 - Sin servidor ni backend
 - Sin autenticación ni base de datos externa
 - Diseño pensado para escritorio (no responsive para móvil en esta versión)
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia [MIT](LICENSE): puedes usar,
+copiar, modificar y redistribuir el código libremente, citando al autor
+original y sin garantías de ningún tipo.
