@@ -224,6 +224,30 @@ Adaptado a que este proyecto no tiene versiones/tags ni una API pública:
   `if` = patrón de ruta), no el `matcher: "Edit(ruta)"` combinado que
   mostraba el ejemplo del temario.
 
+## Agent Skills del proyecto (2026-08-14)
+Siguiente tema del temario tras subagentes/hooks: diferencia entre
+subagentes (contexto aislado, resultado como resumen) y Agent Skills
+(conocimiento/flujo de trabajo cargado en la sesión principal, sin aislar
+contexto). Se crearon dos skills en `.claude/skills/` (raíz del repo, junto
+a `.claude/agents/`) para flujos que ya se repetían sesión tras sesión:
+- `probar-en-navegador`: encapsula el flujo probado de servir
+  `HabitTracker/` por HTTP local (nunca `file://`, claude-in-chrome no lo
+  permite), abrir la página con claude-in-chrome, revisar la consola sin
+  errores y cerrar todo al terminar. Acepta como argumento la ruta a abrir
+  (`index.html` por defecto, o `tests/tests.html`) y, opcionalmente, qué
+  interacción concreta verificar.
+- `revision-habittracker`: lanza en paralelo los 5 subagentes de
+  `.claude/agents/` (`code-reviewer`, `bugs-logica`, `seguridad`,
+  `convenciones`, `calidad`), consolida los hallazgos agrupados por
+  severidad y NO aplica fixes automáticamente — pregunta al usuario, igual
+  que se ha hecho en las rondas de revisión anteriores de este proyecto.
+- **No verificado en esta misma sesión si `/probar-en-navegador` o
+  `/revision-habittracker` ya aparecen como slash commands invocables**:
+  por la misma razón que con los subagentes nuevos (ver
+  [[feedback_subagentes_manual]]), la detección de skills creadas a mitad
+  de sesión puede no ser inmediata. Si no aparecen al escribir `/`, probar
+  en una sesión nueva.
+
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
   la variable en :root, crearla primero (pasó dos veces con --color-danger
