@@ -4,6 +4,7 @@
 const CLAVE_STORAGE = 'habitTracker_data';
 const CATEGORIAS = ['Mente', 'Cuerpo', 'Salud'];
 const DIAS_SEMANA = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const DIAS_CORTOS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
 let filtroCategoriaActual = 'todos';
@@ -269,6 +270,67 @@ function renderizarHistorial() {
   });
 }
 
+// --- UI / RENDER: VISTA SEMANAL ---
+function renderizarVistaSemanal() {
+  const cabecera = document.getElementById('vista-semanal-cabecera');
+  const cuerpo = document.getElementById('vista-semanal-cuerpo');
+  const habitos = cargarHabitos();
+  const dias7 = obtenerUltimos7Dias();
+
+  cabecera.innerHTML = '';
+  cuerpo.innerHTML = '';
+
+  const thHabito = document.createElement('th');
+  thHabito.textContent = 'Hábito';
+  cabecera.appendChild(thHabito);
+
+  dias7.forEach((fecha) => {
+    const fechaObj = new Date(fecha + 'T00:00:00');
+
+    const th = document.createElement('th');
+
+    const nombreDia = document.createElement('span');
+    nombreDia.className = 'dia-header-nombre';
+    nombreDia.textContent = DIAS_CORTOS[fechaObj.getDay()];
+
+    const numeroDia = document.createElement('span');
+    numeroDia.className = 'dia-header-numero';
+    numeroDia.textContent = fechaObj.getDate();
+
+    th.append(nombreDia, numeroDia);
+    cabecera.appendChild(th);
+  });
+
+  if (habitos.length === 0) {
+    const fila = document.createElement('tr');
+    const celda = document.createElement('td');
+    celda.colSpan = dias7.length + 1;
+    celda.className = 'mensaje-vacio';
+    celda.textContent = 'Añade hábitos para ver su vista semanal aquí.';
+    fila.appendChild(celda);
+    cuerpo.appendChild(fila);
+    return;
+  }
+
+  habitos.forEach((habito) => {
+    const fila = document.createElement('tr');
+
+    const celdaNombre = document.createElement('td');
+    celdaNombre.textContent = habito.nombre;
+    fila.appendChild(celdaNombre);
+
+    dias7.forEach((fecha) => {
+      const celda = document.createElement('td');
+      const marca = document.createElement('span');
+      marca.className = 'marca-dia' + (habito.fechasCompletadas.includes(fecha) ? ' completado' : '');
+      celda.appendChild(marca);
+      fila.appendChild(celda);
+    });
+
+    cuerpo.appendChild(fila);
+  });
+}
+
 // --- UI / RENDER: GRÁFICOS ---
 function renderizarGraficos() {
   const contenedor = document.getElementById('graficos-contenido');
@@ -314,6 +376,7 @@ function renderizarTodo() {
   renderizarResumen();
   renderizarMejorRacha();
   renderizarHistorial();
+  renderizarVistaSemanal();
   renderizarGraficos();
 }
 

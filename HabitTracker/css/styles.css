@@ -357,6 +357,70 @@ main {
 }
 
 /* --- HISTORIAL --- */
+.subtitulo-seccion {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-top: var(--espaciado-lg);
+  margin-bottom: var(--espaciado-sm);
+}
+
+.vista-semanal-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radio-borde);
+}
+
+.tabla-vista-semanal {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-white);
+}
+
+.tabla-vista-semanal th,
+.tabla-vista-semanal td {
+  padding: var(--espaciado-sm) var(--espaciado-md);
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabla-vista-semanal tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla-vista-semanal th:first-child,
+.tabla-vista-semanal td:first-child {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dia-header-nombre {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.dia-header-numero {
+  display: block;
+  font-weight: 600;
+}
+
+.marca-dia {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background-color: transparent;
+}
+
+.marca-dia.completado {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
 .historial-lista {
   display: flex;
   flex-direction: column;
