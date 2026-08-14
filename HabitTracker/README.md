@@ -98,7 +98,8 @@ HabitTracker/
 │   └── styles.css    # Todos los estilos
 ├── js/
 │   └── app.js         # Toda la lógica de la aplicación
-└── README.md
+├── README.md
+└── CLAUDE.md          # Especificación, convenciones y decisiones del proyecto
 ```
 
 ## Restricciones de diseño
