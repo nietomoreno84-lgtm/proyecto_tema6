@@ -89,30 +89,28 @@ function eliminarHabito(id) {
   renderizarTodo();
 }
 
-function calcularMejorRachaHabito(habito) {
-  if (habito.fechasCompletadas.length === 0) return 0;
+function calcularRachaActual(habito) {
+  let racha = 0;
+  const fecha = new Date();
 
-  const fechasOrdenadas = [...habito.fechasCompletadas].sort();
-  let mejor = 1;
-  let actual = 1;
-
-  for (let i = 1; i < fechasOrdenadas.length; i++) {
-    const diffDias = Math.round(
-      (new Date(fechasOrdenadas[i]) - new Date(fechasOrdenadas[i - 1])) / 86400000
-    );
-
-    actual = diffDias === 1 ? actual + 1 : 1;
-    mejor = Math.max(mejor, actual);
+  while (true) {
+    const fechaStr = fecha.toISOString().split('T')[0];
+    if (habito.fechasCompletadas.includes(fechaStr)) {
+      racha++;
+      fecha.setDate(fecha.getDate() - 1);
+    } else {
+      break;
+    }
   }
 
-  return mejor;
+  return racha;
 }
 
 function obtenerMejorRacha(habitos) {
   let mejor = { racha: 0, nombre: '' };
 
   habitos.forEach((habito) => {
-    const racha = calcularMejorRachaHabito(habito);
+    const racha = calcularRachaActual(habito);
     if (racha > mejor.racha) {
       mejor = { racha, nombre: habito.nombre };
     }
