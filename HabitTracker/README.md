@@ -12,6 +12,8 @@ cada día y ver el progreso mediante puntitos semanales, rachas y estadísticas.
 - Cálculo de racha actual y mejor racha
 - Resumen diario de completados con barra de progreso
 - Filtro de hábitos por categoría
+- Vista semanal en tabla: los últimos 7 días como columnas y los hábitos
+  como filas, con un círculo verde si se completó ese día
 - Historial de los últimos 14 días
 - Gráficos de cumplimiento semanal por hábito (barras en CSS puro)
 - Opción para borrar todos los datos guardados
@@ -43,6 +45,23 @@ HabitTracker/index.html
 Todos los datos (hábitos e historial de completados) se guardan en el
 `localStorage` del navegador, por lo que persisten entre sesiones pero son
 locales a ese navegador y ese equipo.
+
+### Uso paso a paso
+
+1. Escribe el nombre del hábito en el campo "Nuevo hábito...", elige su
+   categoría (Mente, Cuerpo o Salud) y pulsa "Añadir".
+2. Márcalo como completado hoy con el checkbox de su tarjeta, o haciendo
+   clic en cualquiera de sus 7 puntitos semanales para marcar/desmarcar ese
+   día en concreto (no hace falta que sea hoy).
+3. Usa el filtro lateral ("Todos", "Mente", "Cuerpo", "Salud") para ver solo
+   los hábitos de una categoría; el contador y la barra de progreso se
+   ajustan también al filtro activo.
+4. Consulta la pestaña **Historial** para ver la vista semanal en tabla y el
+   detalle de los últimos 14 días.
+5. Consulta la pestaña **Gráficos** para ver el porcentaje de cumplimiento
+   de cada hábito en los últimos 7 días.
+6. Elimina un hábito con el botón "×" de su tarjeta (pide confirmación), o
+   borra todos los datos guardados desde la pestaña **Configuración**.
 
 ## Esquema de datos
 
