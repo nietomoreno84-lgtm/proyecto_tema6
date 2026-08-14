@@ -72,7 +72,7 @@ como un objeto con la forma:
 {
   "habits": [
     {
-      "id": "1786711032563",
+      "id": "m3x1a2b-f8d21",
       "nombre": "Beber agua",
       "categoria": "Mente",
       "creadoEn": "2026-08-14T12:37:12.563Z",
@@ -107,21 +107,40 @@ http://localhost:8000/tests/tests.html
 Los resultados se muestran en la página (✅/❌ por test) y también se
 imprimen en la consola del navegador (`TESTS: N pasados, M fallados`).
 
+## Documentación
+
+- [`CHANGELOG.md`](CHANGELOG.md) — registro de cambios, generado a partir
+  del historial de Git.
+- [`docs/GUIA_USUARIO.md`](docs/GUIA_USUARIO.md) — guía de uso para
+  personas sin experiencia técnica, sin jerga.
+- [`docs/REFERENCIA_FUNCIONES.md`](docs/REFERENCIA_FUNCIONES.md) —
+  documentación técnica de cada función de `js/app.js` (parámetros, valor
+  de retorno, ejemplos).
+- [`CLAUDE.md`](CLAUDE.md) — especificación original, convenciones de
+  código y decisiones tomadas durante la construcción del proyecto.
+- [`RESUMEN_PROYECTO.md`](RESUMEN_PROYECTO.md) — relato completo del
+  proceso de construcción, de principio a fin.
+
 ## Estructura de carpetas
 
 ```
 HabitTracker/
-├── index.html        # Página principal (única)
+├── index.html              # Página principal (única)
 ├── css/
-│   └── styles.css    # Todos los estilos
+│   └── styles.css          # Todos los estilos
 ├── js/
-│   └── app.js         # Toda la lógica de la aplicación
+│   └── app.js               # Toda la lógica de la aplicación
 ├── tests/
-│   ├── tests.html         # Página que ejecuta la suite en el navegador
-│   ├── test-runner.js     # Mini framework de aserciones, sin dependencias
-│   └── tests-app.js       # Casos de test para js/app.js
+│   ├── tests.html               # Página que ejecuta la suite en el navegador
+│   ├── test-runner.js           # Mini framework de aserciones, sin dependencias
+│   └── tests-app.js             # Casos de test para js/app.js
+├── docs/
+│   ├── GUIA_USUARIO.md          # Guía para usuarios sin perfil técnico
+│   └── REFERENCIA_FUNCIONES.md  # Documentación función a función de app.js
 ├── README.md
-└── CLAUDE.md          # Especificación, convenciones y decisiones del proyecto
+├── CHANGELOG.md             # Registro de cambios
+├── CLAUDE.md                 # Especificación, convenciones y decisiones del proyecto
+└── RESUMEN_PROYECTO.md      # Relato del proceso de construcción
 ```
 
 ## Restricciones de diseño

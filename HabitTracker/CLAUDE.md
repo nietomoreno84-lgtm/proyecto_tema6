@@ -184,6 +184,36 @@ en el navegador sin instalar nada.
   `tests/tests.html` (ver README.md). Los resultados se pintan en la página
   y se imprimen también en consola.
 
+## Documentación técnica generada (2026-08-14)
+Siguiente paso del temario tras los tests: generación automática de
+documentación a partir del código y el historial real (no texto genérico).
+Adaptado a que este proyecto no tiene versiones/tags ni una API pública:
+- `CHANGELOG.md`: generado leyendo `git log` completo (no hay tags, así que
+  cubre desde el inicio del proyecto bajo `[Sin publicar]`), en formato
+  Keep a Changelog (Added/Changed/Fixed/Removed). Curado a nivel de
+  funcionalidad: se excluyeron los commits que documentan el propio proceso
+  de construcción (esos quedan en `RESUMEN_PROYECTO.md`), porque un
+  changelog es para quien usa la app, no para el making-of.
+- `docs/GUIA_USUARIO.md`: sustituye a "documentación de API" por lo que sí
+  tiene sentido aquí — una guía para usuarios sin perfil técnico, sin jerga
+  (nada de "localStorage", "DOM", etc., todo en términos de "se guarda en
+  este ordenador").
+- `docs/REFERENCIA_FUNCIONES.md`: la adaptación real de "documentación de
+  API" — no hay endpoints ni funciones públicas exportadas (`app.js` es un
+  script clásico sin `export`), así que se documentaron las ~30 funciones
+  internas (parámetros, valor de retorno, notas, ejemplos donde aporta).
+  Se dejó en un archivo aparte, no como docstrings dentro de `app.js`, para
+  no romper la convención de comentarios mínimos del proyecto.
+- README.md actualizado con una sección "Documentación" que enlaza los
+  cuatro documentos (README, CHANGELOG, guía de usuario, referencia de
+  funciones, más CLAUDE.md y RESUMEN_PROYECTO.md) y el árbol de carpetas
+  con `docs/` y `CHANGELOG.md`.
+- **No se configuró el hook de auto-actualización de docs** (`PostToolUse`
+  en `.claude/settings.json` que regenera el README al editar código) que
+  describe el temario: implica lanzar `claude -p` automáticamente en cada
+  edición, con coste y comportamiento que conviene decidir explícitamente
+  con el usuario antes de activarlo, no asumirlo.
+
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
   la variable en :root, crearla primero (pasó dos veces con --color-danger
