@@ -78,6 +78,8 @@ HabitTracker/
   - "crear": construir un objeto nuevo del modelo (crearHabito)
   - "obtener"/"calcular": funciones puras que derivan datos sin tocar el DOM
     (obtenerFechaHoy, obtenerUltimos7Dias, calcularRachaActual, obtenerMejorRacha)
+  - "formatear": convierten una fecha a texto (formatearFechaISO,
+    formatearFechaLarga)
   - "renderizar": pintan el DOM a partir del estado (renderizarHabitos,
     renderizarHistorial, renderizarVistaSemanal...). renderizarTodo() es el
     único punto de entrada que se llama tras cualquier mutación de datos —
@@ -122,11 +124,19 @@ HabitTracker/
   antes de corregirlo).
 - Las acciones destructivas (eliminar un hábito, borrar todos los datos) piden
   confirmación con window.confirm() antes de ejecutarse.
-- Elementos interactivos solo con icono (puntitos, botón "×" de eliminar)
-  llevan aria-label; los inputs de texto llevan estilo de :focus visible.
+- Elementos interactivos solo con icono (puntitos, botón "×" de eliminar) y el
+  checkbox de "completado hoy" (sin texto propio asociado) llevan aria-label;
+  los inputs de texto llevan estilo de :focus visible.
 - Antes de retomar una sesión, correr git status/git diff primero: dos
   sesiones de este proyecto terminaron con cambios sin commitear que había
   que detectar antes de asumir que el árbol estaba limpio.
+- NUNCA usar `new Date().toISOString().split('T')[0]` para obtener una fecha
+  en formato "YYYY-MM-DD": `toISOString()` da la fecha en UTC, mientras que el
+  resto de la UI (cabecera, etc.) usa hora local, lo que desalineaba "hoy"
+  cerca de medianoche en husos horarios positivos (bug encontrado por el
+  subagente code-reviewer). Usar siempre `formatearFechaISO(fecha)`, que
+  construye la fecha con los componentes locales (getFullYear/getMonth/
+  getDate).
 
 ## Flujo de trabajo probado
 1. Si llega una iteración/spec nueva del profesor, compararla contra el
