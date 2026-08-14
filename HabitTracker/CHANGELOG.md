@@ -34,6 +34,10 @@ el mismo cambio visible.
 - Suite de tests propia sin dependencias externas (`tests/`): 30 casos
   unitarios, de regresión y de integración sobre la lógica de `js/app.js`,
   ejecutables abriendo `tests/tests.html` en el navegador.
+- Ampliada la suite de tests con 3 casos más, cerrando huecos de cobertura
+  reales: formateo de fecha larga, marcado/desmarcado del día actual desde
+  la propia UI (no solo la función interna de toggle) y el handler de
+  "Borrar datos" con `window.confirm` simulado.
 - Documentación del proyecto: `README.md`, `CLAUDE.md` (especificación y
   convenciones), y esta misma guía (`CHANGELOG.md`).
 

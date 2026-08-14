@@ -236,4 +236,48 @@ test('eliminarHabito_quita_solo_ese_habito_de_storage', () => {
   });
 });
 
+// --- FECHAS / UTILIDADES: huecos de cobertura ---
+
+test('formatearFechaLarga_formatea_con_dia_semana_mes_y_opcionalmente_anio', () => {
+  const fecha = new Date(2026, 7, 14); // 14 de agosto de 2026
+  const esperadoSinAnio = `Hoy, ${DIAS_SEMANA[fecha.getDay()]}, 14 de agosto`;
+  const esperadoConAnio = `${DIAS_SEMANA[fecha.getDay()]}, 14 de agosto · 2026`;
+  assertIgual(formatearFechaLarga(fecha, false), esperadoSinAnio);
+  assertIgual(formatearFechaLarga(fecha, true), esperadoConAnio);
+});
+
+// --- INTEGRACIÓN: huecos de cobertura ---
+
+test('toggleCompletado_marca_y_desmarca_la_fecha_de_hoy_en_storage', () => {
+  conStorageLimpio(() => {
+    const habito = crearHabito('Meditar', 'Mente');
+    guardarHabitos([habito]);
+
+    toggleCompletado(habito.id);
+    assertVerdadero(cargarHabitos()[0].fechasCompletadas.includes(obtenerFechaHoy()), 'no marcó la fecha de hoy');
+
+    toggleCompletado(habito.id);
+    assertVerdadero(!cargarHabitos()[0].fechasCompletadas.includes(obtenerFechaHoy()), 'no desmarcó la fecha de hoy');
+  });
+});
+
+test('manejarClickBorrarDatos_borra_datos_solo_si_se_confirma', () => {
+  conStorageLimpio(() => {
+    guardarHabitos([crearHabito('Leer', 'Mente')]);
+    const confirmOriginal = window.confirm;
+
+    try {
+      window.confirm = () => false;
+      manejarClickBorrarDatos();
+      assertIgual(cargarHabitos().length, 1, 'no debería borrar los datos si el usuario cancela');
+
+      window.confirm = () => true;
+      manejarClickBorrarDatos();
+      assertIgual(cargarHabitos(), [], 'debería borrar los datos si el usuario confirma');
+    } finally {
+      window.confirm = confirmOriginal;
+    }
+  });
+});
+
 mostrarResultadosTests();
