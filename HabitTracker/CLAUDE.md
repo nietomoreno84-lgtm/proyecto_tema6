@@ -158,7 +158,9 @@ en el navegador sin instalar nada.
 - `tests/test-runner.js`: funciones `test(nombre, fn)`, `assertIgual`,
   `assertVerdadero`, `conStorageLimpio` (aísla cada test que toca
   `localStorage`, limpiándolo antes y después) y `mostrarResultadosTests()`.
-- `tests/tests-app.js`: 30 tests sobre las funciones de `js/app.js` —
+- `tests/tests-app.js`: 33 tests sobre las funciones de `js/app.js` (30
+  originales + 3 añadidos por el equipo de agentes, ver sección "Equipos de
+  agentes") —
   unitarios (fechas, rachas, mejor racha, filtro por categoría, modelo),
   de regresión (los 3 bugs de `cargarHabitos()` corregidos en `ec6d543`:
   JSON inválido, formato antiguo en array plano, `fechasCompletadas`
@@ -268,6 +270,51 @@ el acuerdo explícito de revertirlo si no funciona.
   patrón equivalente (lanzar varios subagentes en paralelo y consolidar),
   solo que orquestado manualmente por el asistente principal en vez de por
   un subagente líder delegado.
+
+## Equipos de agentes — prueba real (2026-08-14)
+Siguiente tema del temario tras Agent Skills. Confirmado que con
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (ver sección anterior) el plan
+**Pro** sí expone la infraestructura de equipos: `SendMessage`, `TaskList`,
+`TaskCreate`, `TaskUpdate` y `TaskStop` mencionan explícitamente
+"teammate"/"team-lead"/`"name@team"`, y los agentes lanzados con el tool
+`Agent` pasaron a ejecutarse **en segundo plano** (notificación asíncrona al
+terminar) en vez de bloquear la conversación como antes.
+
+Prueba realizada, calcada del diagrama del temario (seguridad + tests +
+documentador, coordinados por un líder):
+1. Se crearon 3 tareas en el `TaskList` compartido: auditoría de seguridad
+   de `js/app.js` (#1), tests nuevos en `tests/tests-app.js` (#2, en
+   paralelo con la #1 — ámbitos de archivo distintos, sin conflicto) y
+   documentar en `CHANGELOG.md` (#3, bloqueada por #1 y #2 porque depende
+   de sus resultados — no se paralelizó, siguiendo la advertencia del
+   propio temario sobre tareas que se bloquean entre sí).
+2. **Seguridad**: sin hallazgos (coincide con la ronda de seguridad
+   anterior). **Tests**: 3 casos nuevos añadidos cerrando huecos reales de
+   cobertura (`formatearFechaLarga` no tenía ningún test;
+   `toggleCompletado` solo se probaba indirectamente vía `toggleFecha`; el
+   handler `manejarClickBorrarDatos` no tenía cobertura — mockeando
+   `window.confirm`). **Documentador**: resumió los tests nuevos en
+   `CHANGELOG.md` → `Added`, y decidió (criterio editorial propio, no
+   instruido explícitamente) NO añadir línea sobre la auditoría de
+   seguridad por no tener hallazgos nuevos que aportar a un changelog
+   orientado a usuario — mismo criterio que ya excluye documentación de
+   proceso interno.
+3. Verificado por el coordinador (no por los agentes) ejecutando
+   `tests/tests.html` vía servidor local: **33/33 tests en verde**, sin
+   errores de consola inesperados.
+4. **Detalle técnico**: ni el agente de tests ni el documentador tenían
+   `TaskUpdate` en su toolset (solo `SendMessage` a `"main"`), así que el
+   coordinador tuvo que marcar las tareas #2 y #3 como completadas
+   manualmente al recibir sus resúmenes.
+
+**Cómo aplicar**: para tareas verdaderamente independientes con ámbitos de
+archivo separados, lanzar los agentes en paralelo (varias llamadas a
+`Agent` en el mismo mensaje) y dejar que se ejecuten en segundo plano;
+para una tarea que depende del resultado de otras, esperar su notificación
+y pasarle el contexto explícitamente en el prompt (los compañeros no
+heredan el historial de la sesión principal). Siempre verificar el
+resultado real (leer el diff, ejecutar los tests) en vez de fiarse del
+resumen que devuelve cada agente.
 
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
