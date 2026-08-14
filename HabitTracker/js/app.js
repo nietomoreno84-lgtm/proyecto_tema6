@@ -13,11 +13,23 @@ let filtroCategoriaActual = 'todos';
 function cargarHabitos() {
   const datos = localStorage.getItem(CLAVE_STORAGE);
   if (!datos) return [];
-  const parseado = JSON.parse(datos);
-  const habitos = parseado.habits || [];
+
+  let parseado;
+  try {
+    parseado = JSON.parse(datos);
+  } catch (error) {
+    console.error('habitTracker_data contiene JSON inválido, se ignora:', error);
+    return [];
+  }
+
+  // Tolerante al formato antiguo (array plano) y al actual ({ habits: [...] })
+  const habitos = Array.isArray(parseado) ? parseado : (parseado.habits || []);
+
   habitos.forEach((h) => {
     if (!h.categoria) h.categoria = 'Mente';
+    if (!Array.isArray(h.fechasCompletadas)) h.fechasCompletadas = [];
   });
+
   return habitos;
 }
 
