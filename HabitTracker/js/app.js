@@ -1,7 +1,7 @@
 // app.js — Lógica principal de HabitTracker
 
 // --- CONSTANTES ---
-const CLAVE_STORAGE = 'habitTracker.habitos';
+const CLAVE_STORAGE = 'habitTracker_data';
 const CATEGORIAS = ['Mente', 'Cuerpo', 'Salud'];
 const DIAS_SEMANA = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -11,11 +11,13 @@ let filtroCategoriaActual = 'todos';
 // --- ALMACENAMIENTO ---
 function cargarHabitos() {
   const datos = localStorage.getItem(CLAVE_STORAGE);
-  return datos ? JSON.parse(datos) : [];
+  if (!datos) return [];
+  const parseado = JSON.parse(datos);
+  return parseado.habits || [];
 }
 
 function guardarHabitos(habitos) {
-  localStorage.setItem(CLAVE_STORAGE, JSON.stringify(habitos));
+  localStorage.setItem(CLAVE_STORAGE, JSON.stringify({ habits: habitos }));
 }
 
 // --- MODELO ---
@@ -340,7 +342,13 @@ function manejarSubmitFormulario(evento) {
 
 function manejarClickEnLista(evento) {
   if (evento.target.classList.contains('btn-eliminar-habito')) {
-    eliminarHabito(evento.target.dataset.id);
+    const id = evento.target.dataset.id;
+    const habito = cargarHabitos().find((h) => h.id === id);
+    const nombre = habito ? habito.nombre : 'este hábito';
+    const confirmado = window.confirm(`¿Seguro que quieres eliminar "${nombre}"? Esta acción no se puede deshacer.`);
+    if (!confirmado) return;
+
+    eliminarHabito(id);
   }
 }
 
