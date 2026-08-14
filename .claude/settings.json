@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Edit(HabitTracker/js/app.js)",
+            "shell": "bash",
+            "command": "claude -p 'Actualiza HabitTracker/docs/REFERENCIA_FUNCIONES.md para reflejar los cambios en HabitTracker/js/app.js: anade las funciones nuevas, elimina las que ya no existan en el codigo y corrige firmas/parametros/valores de retorno que hayan cambiado. No toques el resto del documento ni otros archivos.' --allowedTools Read,Edit 2>/dev/null || true",
+            "statusMessage": "Actualizando docs/REFERENCIA_FUNCIONES.md..."
+          }
+        ]
+      }
+    ]
+  }
+}

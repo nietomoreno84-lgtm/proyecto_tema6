@@ -208,11 +208,21 @@ Adaptado a que este proyecto no tiene versiones/tags ni una API pública:
   cuatro documentos (README, CHANGELOG, guía de usuario, referencia de
   funciones, más CLAUDE.md y RESUMEN_PROYECTO.md) y el árbol de carpetas
   con `docs/` y `CHANGELOG.md`.
-- **No se configuró el hook de auto-actualización de docs** (`PostToolUse`
-  en `.claude/settings.json` que regenera el README al editar código) que
-  describe el temario: implica lanzar `claude -p` automáticamente en cada
-  edición, con coste y comportamiento que conviene decidir explícitamente
-  con el usuario antes de activarlo, no asumirlo.
+- **Hook de auto-actualización de docs configurado** (2026-08-14, con
+  confirmación explícita del usuario): `.claude/settings.json` en la raíz
+  del repo (`C:\proyecto_tema6\.claude\`, no dentro de `HabitTracker/`,
+  porque ahí es donde vive `.claude/` en este proyecto) tiene un hook
+  `PostToolUse` sobre `Edit` con `"if": "Edit(HabitTracker/js/app.js)"` que
+  lanza `claude -p '...' --allowedTools Read,Edit` para mantener
+  `docs/REFERENCIA_FUNCIONES.md` sincronizado con `app.js` cada vez que se
+  edita. Se probó sustituyendo temporalmente el comando por uno que escribe
+  un centinela en `/tmp`, disparando una edición trivial y reversible sobre
+  `app.js`: el hook se ejecutó correctamente antes de restaurar el comando
+  real (no se hizo una prueba con el `claude -p` real para no gastar una
+  invocación anidada solo para verificar). El matcher usa la sintaxis
+  correcta de este esquema de hooks (`matcher` = nombre de herramienta,
+  `if` = patrón de ruta), no el `matcher: "Edit(ruta)"` combinado que
+  mostraba el ejemplo del temario.
 
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
