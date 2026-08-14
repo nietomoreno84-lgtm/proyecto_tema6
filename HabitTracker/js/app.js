@@ -207,7 +207,8 @@ function renderizarMejorRacha() {
   const habitos = cargarHabitos();
   const mejor = obtenerMejorRacha(habitos);
 
-  document.getElementById('racha-valor').textContent = `🔥 ${mejor.racha} días`;
+  const etiquetaDias = mejor.racha === 1 ? 'día' : 'días';
+  document.getElementById('racha-valor').textContent = `🔥 ${mejor.racha} ${etiquetaDias}`;
   document.getElementById('racha-habito').textContent = mejor.racha > 0 ? mejor.nombre : '—';
 }
 
