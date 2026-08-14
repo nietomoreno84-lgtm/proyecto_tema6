@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HabitTracker</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9IiM0Q0FGNTAiLz4KICA8cGF0aCBkPSJNOSAxN2w1IDUgOS0xMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjlGQUZCIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>🎯 HabitTracker</h1>
+    <p id="fecha-cabecera"></p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn activo" data-tab="hoy" type="button">Hoy</button>
+    <button class="tab-btn" data-tab="historial" type="button">Historial</button>
+    <button class="tab-btn" data-tab="graficos" type="button">Gráficos</button>
+    <button class="tab-btn" data-tab="configuracion" type="button">Configuración</button>
+  </nav>
+
+  <main>
+    <!-- --- PESTAÑA: HOY --- -->
+    <section id="tab-hoy" class="tab-panel activo">
+      <aside class="sidebar">
+        <h2>Filtrar</h2>
+        <ul id="filtro-categorias" class="filtro-lista">
+          <li><button class="filtro-btn activo" data-categoria="todos" type="button">Todos</button></li>
+          <li><button class="filtro-btn" data-categoria="Mente" type="button">Mente</button></li>
+          <li><button class="filtro-btn" data-categoria="Cuerpo" type="button">Cuerpo</button></li>
+          <li><button class="filtro-btn" data-categoria="Salud" type="button">Salud</button></li>
+        </ul>
+
+        <div class="resumen-hoy">
+          <h2>Hoy</h2>
+          <p id="contador-completados" class="contador-grande">0/0</p>
+          <p class="contador-label">completados</p>
+          <div class="barra-progreso">
+            <div id="barra-progreso-relleno" class="barra-progreso-relleno"></div>
+          </div>
+        </div>
+
+        <div class="mejor-racha">
+          <h2>Mejor racha</h2>
+          <p id="racha-valor" class="racha-valor">🔥 0 días</p>
+          <p id="racha-habito" class="racha-habito">&nbsp;</p>
+        </div>
+      </aside>
+
+      <div class="contenido-hoy">
+        <div class="contenido-header">
+          <h2 id="fecha-larga">Hoy</h2>
+          <button id="btn-nuevo-habito" class="btn-primary" type="button">+ Nuevo hábito</button>
+        </div>
+
+        <div id="habit-cards" class="habit-list">
+          <!-- Las tarjetas de hábitos se renderizan aquí dinámicamente -->
+        </div>
+
+        <form id="form-add-habit" class="form-inline">
+          <input type="text" id="input-nombre" placeholder="Nuevo hábito..." required>
+          <select id="input-categoria">
+            <option value="Mente">Mente</option>
+            <option value="Cuerpo">Cuerpo</option>
+            <option value="Salud">Salud</option>
+          </select>
+          <button type="submit" class="btn-primary">Añadir</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- --- PESTAÑA: HISTORIAL --- -->
+    <section id="tab-historial" class="tab-panel">
+      <h2>Historial</h2>
+      <div id="historial-lista" class="historial-lista">
+        <!-- Se renderiza dinámicamente -->
+      </div>
+    </section>
+
+    <!-- --- PESTAÑA: GRÁFICOS --- -->
+    <section id="tab-graficos" class="tab-panel">
+      <h2>Gráficos</h2>
+      <div id="graficos-contenido" class="graficos-contenido">
+        <!-- Se renderiza dinámicamente -->
+      </div>
+    </section>
+
+    <!-- --- PESTAÑA: CONFIGURACIÓN --- -->
+    <section id="tab-configuracion" class="tab-panel">
+      <h2>Configuración</h2>
+      <div class="config-opciones">
+        <p>Borra todos los hábitos y su historial guardados en este navegador.</p>
+        <button id="btn-borrar-datos" class="btn-danger" type="button">Borrar todos los datos</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
