@@ -24,6 +24,7 @@
   --espaciado-xl: 2rem;
 
   --radio-borde: 8px;
+  --radio-borde-sm: 6px;
   --fuente-base: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
@@ -138,7 +139,7 @@ main {
   text-align: left;
   background: none;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radio-borde-sm);
   padding: var(--espaciado-sm) var(--espaciado-md);
   font-size: 0.95rem;
   color: var(--color-text);
@@ -317,7 +318,7 @@ main {
   flex: 1;
   padding: var(--espaciado-sm) var(--espaciado-md);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radio-borde-sm);
   font-size: 1rem;
   font-family: inherit;
 }
@@ -331,7 +332,7 @@ main {
 .form-inline select {
   padding: var(--espaciado-sm) var(--espaciado-md);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: var(--radio-borde-sm);
   font-size: 1rem;
   font-family: inherit;
   background-color: var(--color-white);
@@ -342,7 +343,7 @@ main {
   background-color: var(--color-primary);
   color: var(--color-white);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radio-borde-sm);
   padding: var(--espaciado-sm) var(--espaciado-md);
   font-size: 1rem;
   cursor: pointer;
@@ -356,7 +357,7 @@ main {
   background-color: var(--color-white);
   color: var(--color-danger);
   border: 1px solid var(--color-danger);
-  border-radius: 6px;
+  border-radius: var(--radio-borde-sm);
   padding: var(--espaciado-sm) var(--espaciado-md);
   font-size: 1rem;
   cursor: pointer;

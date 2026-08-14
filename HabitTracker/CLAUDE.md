@@ -126,6 +126,29 @@ HabitTracker/
   siguiente `guardarHabitos()`. Encontrado por el subagente `bugs-logica`
   (ver RESUMEN_PROYECTO.md).
 
+## Hallazgos de convenciones/calidad aplicados (2026-08-14)
+Tras la ronda de subagentes en paralelo (ver RESUMEN_PROYECTO.md sección 10),
+se aplicaron los 8 hallazgos de `convenciones` y `calidad` que habían quedado
+pendientes:
+- Renombradas `crearPuntitosSemana` → `renderizarPuntitosSemana` y
+  `actualizarFechaHeader` → `renderizarFechaHeader`: ambas pintan el DOM, así
+  que llevan el prefijo `renderizar` en vez de `crear`/`actualizar`. Por la
+  misma razón, la nueva función extraída de `renderizarHabitos` se llamó
+  `renderizarTarjetaHabito` (no `crearTarjetaHabito`, que fue el nombre que
+  propuso el subagente `calidad` pero rompía esta misma convención).
+- `aplicarFiltro` ahora llama a `renderizarTodo()` en vez de renderizar
+  parcialmente (`renderizarHabitos` + `renderizarResumen`), respetando el
+  patrón de único punto de entrada tras cualquier cambio de estado visible.
+- Generalizado el bucle de "últimos N días" en `obtenerUltimosNDias(n)`
+  (devuelve objetos `Date`); `obtenerUltimos7Dias()` y el bucle de 14 días de
+  `renderizarHistorial` lo reutilizan en vez de duplicar la lógica.
+- `renderizarVistaSemanal` dividida en `renderizarCabeceraSemanal` y
+  `renderizarCuerpoSemanal`.
+- Creada la variable `--radio-borde-sm: 6px` en `:root` y sustituidos los 5
+  `border-radius: 6px` que estaban hardcodeados en `styles.css`.
+- Documentado en un comentario por qué `cargarHabitos()` migra `categoria`
+  ausente a `"Mente"` (dato guardado antes de que ese campo existiera).
+
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
   la variable en :root, crearla primero (pasó dos veces con --color-danger

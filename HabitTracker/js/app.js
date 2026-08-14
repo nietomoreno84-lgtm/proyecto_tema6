@@ -26,6 +26,8 @@ function cargarHabitos() {
   const habitos = Array.isArray(parseado) ? parseado : (parseado.habits || []);
 
   habitos.forEach((h) => {
+    // 'Mente' es la categoría por defecto para hábitos guardados antes de
+    // que el campo categoria existiera en el modelo (iteración 2 del profesor).
     if (!h.categoria) h.categoria = 'Mente';
     if (!Array.isArray(h.fechasCompletadas)) h.fechasCompletadas = [];
   });
@@ -60,14 +62,18 @@ function obtenerFechaHoy() {
   return formatearFechaISO(new Date());
 }
 
-function obtenerUltimos7Dias() {
+function obtenerUltimosNDias(n) {
   const dias = [];
-  for (let i = 6; i >= 0; i--) {
+  for (let i = n - 1; i >= 0; i--) {
     const fecha = new Date();
     fecha.setDate(fecha.getDate() - i);
-    dias.push(formatearFechaISO(fecha));
+    dias.push(fecha);
   }
   return dias;
+}
+
+function obtenerUltimos7Dias() {
+  return obtenerUltimosNDias(7).map(formatearFechaISO);
 }
 
 function formatearFechaLarga(fecha, conAnio) {
@@ -140,13 +146,13 @@ function obtenerMejorRacha(habitos) {
 }
 
 // --- UI / RENDER: HOY ---
-function actualizarFechaHeader() {
+function renderizarFechaHeader() {
   const hoy = new Date();
   document.getElementById('fecha-cabecera').textContent = formatearFechaLarga(hoy, true);
   document.getElementById('fecha-larga').textContent = formatearFechaLarga(hoy, false);
 }
 
-function crearPuntitosSemana(habito) {
+function renderizarPuntitosSemana(habito) {
   const contenedor = document.createElement('div');
   contenedor.className = 'puntitos-semana';
 
@@ -168,6 +174,40 @@ function obtenerHabitosVisibles(habitos) {
   return filtroCategoriaActual === 'todos'
     ? habitos
     : habitos.filter((h) => h.categoria === filtroCategoriaActual);
+}
+
+function renderizarTarjetaHabito(habito, hoy) {
+  const completadoHoy = habito.fechasCompletadas.includes(hoy);
+
+  const tarjeta = document.createElement('div');
+  tarjeta.className = 'habit-card' + (completadoHoy ? ' completado' : '');
+
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = completadoHoy;
+  checkbox.dataset.id = habito.id;
+  checkbox.className = 'checkbox-completado';
+  checkbox.setAttribute('aria-label', `Marcar ${habito.nombre} como completado hoy`);
+
+  const nombre = document.createElement('span');
+  nombre.className = 'habit-nombre';
+  nombre.textContent = habito.nombre;
+
+  const etiqueta = document.createElement('span');
+  etiqueta.className = 'tag-categoria tag-' + habito.categoria.toLowerCase();
+  etiqueta.textContent = habito.categoria;
+
+  const puntitos = renderizarPuntitosSemana(habito);
+
+  const btnEliminar = document.createElement('button');
+  btnEliminar.type = 'button';
+  btnEliminar.className = 'btn-eliminar-habito';
+  btnEliminar.dataset.id = habito.id;
+  btnEliminar.textContent = '×';
+  btnEliminar.setAttribute('aria-label', 'Eliminar hábito');
+
+  tarjeta.append(checkbox, nombre, etiqueta, puntitos, btnEliminar);
+  return tarjeta;
 }
 
 function renderizarHabitos() {
@@ -196,37 +236,7 @@ function renderizarHabitos() {
   }
 
   habitosFiltrados.forEach((habito) => {
-    const completadoHoy = habito.fechasCompletadas.includes(hoy);
-
-    const tarjeta = document.createElement('div');
-    tarjeta.className = 'habit-card' + (completadoHoy ? ' completado' : '');
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = completadoHoy;
-    checkbox.dataset.id = habito.id;
-    checkbox.className = 'checkbox-completado';
-    checkbox.setAttribute('aria-label', `Marcar ${habito.nombre} como completado hoy`);
-
-    const nombre = document.createElement('span');
-    nombre.className = 'habit-nombre';
-    nombre.textContent = habito.nombre;
-
-    const etiqueta = document.createElement('span');
-    etiqueta.className = 'tag-categoria tag-' + habito.categoria.toLowerCase();
-    etiqueta.textContent = habito.categoria;
-
-    const puntitos = crearPuntitosSemana(habito);
-
-    const btnEliminar = document.createElement('button');
-    btnEliminar.type = 'button';
-    btnEliminar.className = 'btn-eliminar-habito';
-    btnEliminar.dataset.id = habito.id;
-    btnEliminar.textContent = '×';
-    btnEliminar.setAttribute('aria-label', 'Eliminar hábito');
-
-    tarjeta.append(checkbox, nombre, etiqueta, puntitos, btnEliminar);
-    contenedor.appendChild(tarjeta);
+    contenedor.appendChild(renderizarTarjetaHabito(habito, hoy));
   });
 }
 
@@ -262,14 +272,7 @@ function renderizarHistorial() {
     return;
   }
 
-  const dias = [];
-  for (let i = 13; i >= 0; i--) {
-    const fecha = new Date();
-    fecha.setDate(fecha.getDate() - i);
-    dias.push(fecha);
-  }
-
-  dias.forEach((fecha) => {
+  obtenerUltimosNDias(14).forEach((fecha) => {
     const fechaStr = formatearFechaISO(fecha);
     const completadosEseDia = habitos.filter((h) => h.fechasCompletadas.includes(fechaStr));
 
@@ -291,14 +294,8 @@ function renderizarHistorial() {
 }
 
 // --- UI / RENDER: VISTA SEMANAL ---
-function renderizarVistaSemanal() {
-  const cabecera = document.getElementById('vista-semanal-cabecera');
-  const cuerpo = document.getElementById('vista-semanal-cuerpo');
-  const habitos = cargarHabitos();
-  const dias7 = obtenerUltimos7Dias();
-
+function renderizarCabeceraSemanal(cabecera, dias7) {
   cabecera.innerHTML = '';
-  cuerpo.innerHTML = '';
 
   const thHabito = document.createElement('th');
   thHabito.textContent = 'Hábito';
@@ -320,6 +317,10 @@ function renderizarVistaSemanal() {
     th.append(nombreDia, numeroDia);
     cabecera.appendChild(th);
   });
+}
+
+function renderizarCuerpoSemanal(cuerpo, habitos, dias7) {
+  cuerpo.innerHTML = '';
 
   if (habitos.length === 0) {
     const fila = document.createElement('tr');
@@ -349,6 +350,16 @@ function renderizarVistaSemanal() {
 
     cuerpo.appendChild(fila);
   });
+}
+
+function renderizarVistaSemanal() {
+  const cabecera = document.getElementById('vista-semanal-cabecera');
+  const cuerpo = document.getElementById('vista-semanal-cuerpo');
+  const habitos = cargarHabitos();
+  const dias7 = obtenerUltimos7Dias();
+
+  renderizarCabeceraSemanal(cabecera, dias7);
+  renderizarCuerpoSemanal(cuerpo, habitos, dias7);
 }
 
 // --- UI / RENDER: GRÁFICOS ---
@@ -419,8 +430,7 @@ function aplicarFiltro(categoria) {
     boton.classList.toggle('activo', boton.dataset.categoria === categoria);
   });
 
-  renderizarHabitos();
-  renderizarResumen();
+  renderizarTodo();
 }
 
 // --- EVENTOS ---
@@ -492,7 +502,7 @@ function inicializarEventos() {
 
 // --- INIT ---
 function inicializar() {
-  actualizarFechaHeader();
+  renderizarFechaHeader();
   inicializarEventos();
   renderizarTodo();
 }
