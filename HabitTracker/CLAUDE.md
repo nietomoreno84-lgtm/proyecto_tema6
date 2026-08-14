@@ -241,12 +241,11 @@ a `.claude/agents/`) para flujos que ya se repetían sesión tras sesión:
   `convenciones`, `calidad`), consolida los hallazgos agrupados por
   severidad y NO aplica fixes automáticamente — pregunta al usuario, igual
   que se ha hecho en las rondas de revisión anteriores de este proyecto.
-- **No verificado en esta misma sesión si `/probar-en-navegador` o
-  `/revision-habittracker` ya aparecen como slash commands invocables**:
-  por la misma razón que con los subagentes nuevos (ver
-  [[feedback_subagentes_manual]]), la detección de skills creadas a mitad
-  de sesión puede no ser inmediata. Si no aparecen al escribir `/`, probar
-  en una sesión nueva.
+- **Confirmado en la misma sesión en que se crearon**: `probar-en-navegador`
+  y `revision-habittracker` aparecieron disponibles como skills invocables
+  sin reiniciar sesión (igual que pasó con los 4 subagentes nuevos — ver
+  [[feedback_subagentes_manual]] sobre lo no determinista de esta
+  detección; con skills, en esta ocasión, funcionó de inmediato).
 
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
