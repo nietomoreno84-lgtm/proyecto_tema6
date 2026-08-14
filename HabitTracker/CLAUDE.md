@@ -316,6 +316,28 @@ heredan el historial de la sesión principal). Siempre verificar el
 resultado real (leer el diff, ejecutar los tests) en vez de fiarse del
 resumen que devuelve cada agente.
 
+## Práctica final del curso: documentación (2026-08-14)
+Ejercicio de evaluación sobre los tres documentos ya generados en el tema
+de documentación técnica. Checklist del enunciado (README con descripción,
+requisitos, instalación, uso con ejemplos reales, estructura y licencia;
+guía de usuario; documentación técnica de funciones; reflexión comparando
+los tres) contrastado contra lo ya hecho:
+- Faltaban explícitamente **Requisitos**, **Instalación** y **Licencia**
+  en el README — añadidos. Licencia decidida con el usuario: **MIT**
+  (archivo `LICENSE` nuevo en la raíz de `HabitTracker/`).
+- Verificado con `diff` de funciones (`grep` de `^function` en `app.js`
+  contra los headers `### \`nombre\`` de `REFERENCIA_FUNCIONES.md`): 34/34
+  funciones coinciden exactamente en ambas direcciones, sin huecos ni
+  documentación de funciones que ya no existen — confirma que el documento
+  sigue generado desde el código real, no genérico.
+- Añadido `docs/REFLEXION_DOCUMENTACION.md`: comparativa breve (el
+  enunciado pide "breve reflexión") de qué documento sirve a qué público
+  y qué mejorar en una segunda iteración. Primera versión salió demasiado
+  larga; se recortó tras feedback del usuario para ajustarse al "breve"
+  del enunciado sin perder la especificidad del proyecto real (a
+  diferencia del ejemplo de solución del curso, que usaba un proyecto
+  Python genérico de referencia).
+
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
   la variable en :root, crearla primero (pasó dos veces con --color-danger
