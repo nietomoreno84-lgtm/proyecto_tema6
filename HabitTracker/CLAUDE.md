@@ -247,6 +247,28 @@ a `.claude/agents/`) para flujos que ya se repetían sesión tras sesión:
   [[feedback_subagentes_manual]] sobre lo no determinista de esta
   detección; con skills, en esta ocasión, funcionó de inmediato).
 
+## Equipos de agentes (experimental, 2026-08-14)
+Siguiente tema del temario tras Agent Skills. Requiere Claude Code v2.1.32+
+(esta instalación: 2.1.232, cumple) y la variable de entorno
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`. El texto del temario dice que está
+"disponible en los planes Max"; el usuario confirmó tener plan **Pro**, no
+Max — se activa igualmente a modo de prueba (reversible, sin riesgo), con
+el acuerdo explícito de revertirlo si no funciona.
+- Añadida a `.claude/settings.json` → `env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"`.
+- **Pendiente de comprobar**: como con el hook de `PostToolUse` (ver más
+  abajo) y como con las variables de entorno en general, este flag se lee
+  al arrancar la sesión — no tiene efecto hasta reiniciar Claude Code.
+  Comprobar en la próxima sesión si la funcionalidad de equipos aparece
+  disponible; si el plan Pro no la soporta, revertir quitando la variable
+  de `.claude/settings.json`.
+- HabitTracker es un proyecto pequeño (un HTML, un CSS, un JS): el caso de
+  uso fuerte de equipos de agentes es dividir trabajo en módulos
+  independientes que no se bloqueen entre sí — aquí no hay tanta superficie
+  para ese paralelismo. La skill `revision-habittracker` ya cubre un
+  patrón equivalente (lanzar varios subagentes en paralelo y consolidar),
+  solo que orquestado manualmente por el asistente principal en vez de por
+  un subagente líder delegado.
+
 ## Restricciones aprendidas durante el proyecto
 - NUNCA hardcodear un color o valor de espaciado en styles.css: si no existe
   la variable en :root, crearla primero (pasó dos veces con --color-danger
