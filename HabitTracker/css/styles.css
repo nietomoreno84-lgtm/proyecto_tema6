@@ -274,6 +274,14 @@ main {
   border-radius: 50%;
   border: 1.5px solid var(--color-border);
   background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.punto:hover:not(.completado) {
+  border-color: var(--color-primary);
 }
 
 .punto.completado {

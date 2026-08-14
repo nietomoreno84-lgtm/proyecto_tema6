@@ -13,7 +13,11 @@ function cargarHabitos() {
   const datos = localStorage.getItem(CLAVE_STORAGE);
   if (!datos) return [];
   const parseado = JSON.parse(datos);
-  return parseado.habits || [];
+  const habitos = parseado.habits || [];
+  habitos.forEach((h) => {
+    if (!h.categoria) h.categoria = 'Mente';
+  });
+  return habitos;
 }
 
 function guardarHabitos(habitos) {
@@ -58,16 +62,15 @@ function formatearFechaLarga(fecha, conAnio) {
 }
 
 // --- LÓGICA ---
-function toggleCompletado(id) {
+function toggleFecha(id, fecha) {
   const habitos = cargarHabitos();
   const habito = habitos.find((h) => h.id === id);
   if (!habito) return;
 
-  const hoy = obtenerFechaHoy();
-  const indice = habito.fechasCompletadas.indexOf(hoy);
+  const indice = habito.fechasCompletadas.indexOf(fecha);
 
   if (indice === -1) {
-    habito.fechasCompletadas.push(hoy);
+    habito.fechasCompletadas.push(fecha);
   } else {
     habito.fechasCompletadas.splice(indice, 1);
   }
@@ -76,34 +79,40 @@ function toggleCompletado(id) {
   renderizarTodo();
 }
 
+function toggleCompletado(id) {
+  toggleFecha(id, obtenerFechaHoy());
+}
+
 function eliminarHabito(id) {
   const habitos = cargarHabitos().filter((h) => h.id !== id);
   guardarHabitos(habitos);
   renderizarTodo();
 }
 
-function calcularRachaActual(habito) {
-  let racha = 0;
-  const fecha = new Date();
+function calcularMejorRachaHabito(habito) {
+  if (habito.fechasCompletadas.length === 0) return 0;
 
-  while (true) {
-    const fechaStr = fecha.toISOString().split('T')[0];
-    if (habito.fechasCompletadas.includes(fechaStr)) {
-      racha++;
-      fecha.setDate(fecha.getDate() - 1);
-    } else {
-      break;
-    }
+  const fechasOrdenadas = [...habito.fechasCompletadas].sort();
+  let mejor = 1;
+  let actual = 1;
+
+  for (let i = 1; i < fechasOrdenadas.length; i++) {
+    const diffDias = Math.round(
+      (new Date(fechasOrdenadas[i]) - new Date(fechasOrdenadas[i - 1])) / 86400000
+    );
+
+    actual = diffDias === 1 ? actual + 1 : 1;
+    mejor = Math.max(mejor, actual);
   }
 
-  return racha;
+  return mejor;
 }
 
 function obtenerMejorRacha(habitos) {
   let mejor = { racha: 0, nombre: '' };
 
   habitos.forEach((habito) => {
-    const racha = calcularRachaActual(habito);
+    const racha = calcularMejorRachaHabito(habito);
     if (racha > mejor.racha) {
       mejor = { racha, nombre: habito.nombre };
     }
@@ -124,12 +133,23 @@ function crearPuntitosSemana(habito) {
   contenedor.className = 'puntitos-semana';
 
   obtenerUltimos7Dias().forEach((fecha) => {
-    const punto = document.createElement('span');
-    punto.className = 'punto' + (habito.fechasCompletadas.includes(fecha) ? ' completado' : '');
+    const completado = habito.fechasCompletadas.includes(fecha);
+    const punto = document.createElement('button');
+    punto.type = 'button';
+    punto.className = 'punto' + (completado ? ' completado' : '');
+    punto.dataset.id = habito.id;
+    punto.dataset.fecha = fecha;
+    punto.setAttribute('aria-label', `${completado ? 'Desmarcar' : 'Marcar'} ${habito.nombre} el ${fecha}`);
     contenedor.appendChild(punto);
   });
 
   return contenedor;
+}
+
+function obtenerHabitosVisibles(habitos) {
+  return filtroCategoriaActual === 'todos'
+    ? habitos
+    : habitos.filter((h) => h.categoria === filtroCategoriaActual);
 }
 
 function renderizarHabitos() {
@@ -137,9 +157,7 @@ function renderizarHabitos() {
   const habitos = cargarHabitos();
   const hoy = obtenerFechaHoy();
 
-  const habitosFiltrados = filtroCategoriaActual === 'todos'
-    ? habitos
-    : habitos.filter((h) => h.categoria === filtroCategoriaActual);
+  const habitosFiltrados = obtenerHabitosVisibles(habitos);
 
   contenedor.innerHTML = '';
 
@@ -194,10 +212,10 @@ function renderizarHabitos() {
 }
 
 function renderizarResumen() {
-  const habitos = cargarHabitos();
+  const habitosVisibles = obtenerHabitosVisibles(cargarHabitos());
   const hoy = obtenerFechaHoy();
-  const completados = habitos.filter((h) => h.fechasCompletadas.includes(hoy)).length;
-  const total = habitos.length;
+  const completados = habitosVisibles.filter((h) => h.fechasCompletadas.includes(hoy)).length;
+  const total = habitosVisibles.length;
 
   document.getElementById('contador-completados').textContent = `${completados}/${total}`;
 
@@ -321,6 +339,7 @@ function aplicarFiltro(categoria) {
   });
 
   renderizarHabitos();
+  renderizarResumen();
 }
 
 // --- EVENTOS ---
@@ -349,6 +368,11 @@ function manejarClickEnLista(evento) {
     if (!confirmado) return;
 
     eliminarHabito(id);
+  }
+
+  if (evento.target.classList.contains('punto')) {
+    const { id, fecha } = evento.target.dataset;
+    toggleFecha(id, fecha);
   }
 }
 
